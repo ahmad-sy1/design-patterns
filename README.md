@@ -2,6 +2,8 @@
 
 Uitwerkingen van de opdrachten voor het vak API 3 – Design Patterns. Het vak volgt het boek Head First Design Patterns (Freeman & Freeman, O'Reilly). De voorbeelden in het boek zijn in Java; alle uitwerkingen in deze repo zijn in C# / .NET.
 
+**Claude Code is gebruikt om de geneste mapstructuur van deze repo te fixen.**
+
 ## Structuur
 
 Elke week staat in een eigen map, genummerd op volgorde van behandeling:
