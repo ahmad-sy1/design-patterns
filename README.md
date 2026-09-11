@@ -22,7 +22,7 @@ Per map staat een losse console-applicatie met de klassen van dat patroon en een
 | Week | Patroon | Map | Status |
 |------|---------|-----|--------|
 | 1 | Strategy | 01-StrategyPattern | ✅ af |
-| 2 | Observer | 02-ObserverPattern | 🔜 |
+| 2 | Observer | 02-ObserverPattern | ✅ af |
 | 3 | Decorator | 03-DecoratorPattern | 🔜 |
 | 4 | Factory | 04-FactoryPattern | 🔜 |
 | 5 | Singleton | 05-SingletonPattern | 🔜 |
