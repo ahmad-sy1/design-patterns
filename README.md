@@ -12,7 +12,7 @@ Elke week staat in een eigen map, genummerd op volgorde van behandeling:
 design-patterns/
 ├── 01-StrategyPattern/
 ├── 02-ObserverPattern/
-├── 03-DecoratorPattern/
+├── 03-AdapterPattern/
 ├── ...
 └── README.md
 ```
@@ -21,13 +21,13 @@ Per map staat een losse console-applicatie met de klassen van dat patroon en een
 
 ## Patronen
 
-| Week | Patroon | Map | Status |
-|------|---------|-----|--------|
+| Nr | Patroon | Map | Status |
+|----|---------|-----|--------|
 | 1 | Strategy | 01-StrategyPattern | ✅ af |
 | 2 | Observer | 02-ObserverPattern | ✅ af |
-| 3 | Decorator | 03-DecoratorPattern | 🔜 |
-| 4 | Factory | 04-FactoryPattern | 🔜 |
-| 5 | Singleton | 05-SingletonPattern | 🔜 |
-| 6 | Adapter | 06-AdapterPattern | 🔜 |
+| 3 | Adapter | 03-AdapterPattern | 🔜 |
+| 4 | Decorator | 04-DecoratorPattern | 🔜 |
+| 5 | Factory | 05-FactoryPattern | 🔜 |
+| 6 | Singleton | 06-SingletonPattern | 🔜 |
 | 7 | Facade | 07-FacadePattern | 🔜 |
 | 8 | Template Method | 08-TemplateMethod | 🔜 |
