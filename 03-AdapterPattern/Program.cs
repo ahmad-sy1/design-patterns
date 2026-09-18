@@ -1,30 +1,25 @@
-﻿namespace NotificationApp
+namespace NotificationApp
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            INotificationService emailService =
-                new EmailNotificationService();
+            NotificationManager manager =
+                new NotificationManager(new EmailNotificationService());
 
-            INotificationService smsService =
-                new SmsNotificationService();
-
-            INotificationService pushService =
-                new PushNotificationService();
-
-
-            emailService.Send(
+            manager.Notify(
                 "student@school.nl",
                 "Je nieuwe rooster staat klaar."
             );
 
-            smsService.Send(
+            manager.SetNotificationService(new SmsNotificationService());
+            manager.Notify(
                 "0612345678",
                 "Je les begint over 15 minuten."
             );
 
-            pushService.Send(
+            manager.SetNotificationService(new PushNotificationService());
+            manager.Notify(
                 "student123",
                 "Er staat nieuwe feedback voor je klaar."
             );
