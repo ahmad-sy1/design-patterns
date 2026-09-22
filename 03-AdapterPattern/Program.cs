@@ -4,22 +4,32 @@ namespace NotificationApp
     {
         static void Main(string[] args)
         {
-            NotificationManager manager =
-                new NotificationManager(new EmailNotificationService());
+            INotificationService emailService =
+                new EmailNotificationService();
+
+            INotificationService smsService =
+                new SmsNotificationService();
+
+            INotificationService pushService =
+                new PushNotificationService();
+
+            NotificationManager manager = new NotificationManager();
+
 
             manager.Notify(
+                emailService,
                 "student@school.nl",
                 "Je nieuwe rooster staat klaar."
             );
 
-            manager.SetNotificationService(new SmsNotificationService());
             manager.Notify(
+                smsService,
                 "0612345678",
                 "Je les begint over 15 minuten."
             );
 
-            manager.SetNotificationService(new PushNotificationService());
             manager.Notify(
+                pushService,
                 "student123",
                 "Er staat nieuwe feedback voor je klaar."
             );
