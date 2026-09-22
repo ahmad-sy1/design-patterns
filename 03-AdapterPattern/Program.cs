@@ -1,3 +1,5 @@
+using ExternalWhatsAppLibrary;
+
 namespace NotificationApp
 {
     internal class Program
@@ -12,6 +14,9 @@ namespace NotificationApp
 
             INotificationService pushService =
                 new PushNotificationService();
+
+            INotificationService whatsAppService =
+                new WhatsAppNotificationAdapter(new WhatsAppClient(), true);
 
             NotificationManager manager = new NotificationManager();
 
@@ -32,6 +37,12 @@ namespace NotificationApp
                 pushService,
                 "student123",
                 "Er staat nieuwe feedback voor je klaar."
+            );
+
+            manager.Notify(
+                whatsAppService,
+                "0612345678",
+                "Je toets is verplaatst naar morgen."
             );
 
 
