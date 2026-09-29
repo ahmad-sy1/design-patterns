@@ -5,7 +5,7 @@ Console-applicatie voor het versturen van notificaties aan gebruikers (email, sm
 ## Structuur
 
 ```
-03-AdapterPattern/DocentOpdrachten/
+03-AdapterPattern/Deelopdrachten/
 ├── INotificationService.cs            // doel-interface (Target)
 ├── EmailNotificationService.cs
 ├── SmsNotificationService.cs
