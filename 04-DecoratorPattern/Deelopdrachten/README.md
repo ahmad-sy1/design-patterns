@@ -142,7 +142,25 @@ Elke extra kan aan of uit staan. Met 3 extra's zijn er 2³ − 1 = 7 combinaties
 
 Beantwoord vragen over de abstracte NotificationDecorator: waarom hij INotificationService implementeert, waarom hij een field van dat type heeft, waarom de interface en niet EmailNotificationService, en het verschil tussen IS-A en HAS-A.
 
-**Uitwerking:** _nog in te vullen_
+**Uitwerking:**
+
+**Waarom implementeert `NotificationDecorator` `INotificationService`?**
+Een decorator moet overal gebruikt kunnen worden waar een `INotificationService` verwacht wordt. Voor de code die hem gebruikt, ziet een gedecoreerde service er precies hetzelfde uit als een gewone service.
+
+**Waarom heeft hij een field van het type `INotificationService`?**
+In dat field zit het object dat de decorator "inpakt". De decorator doet eerst of daarna zijn eigen extra werk, en geeft het echte versturen door aan dat object.
+
+**Waarom de interface en niet `EmailNotificationService`?**
+Met de interface kan de decorator **elke** service inpakken: Email, Sms, maar ook een andere decorator. Met `EmailNotificationService` zou hij alleen e-mail kunnen versieren, en dan zit je weer vast aan één concrete klasse.
+
+**Wat is het verschil tussen IS-A en HAS-A?**
+
+| | Betekenis | Bij de decorator |
+|---|---|---|
+| IS-A | overerving / implementatie: "is een" | `NotificationDecorator` **is een** `INotificationService` |
+| HAS-A | compositie: "heeft een" | `NotificationDecorator` **heeft een** `INotificationService` (het field) |
+
+De decorator gebruikt IS-A zodat hij hetzelfde *type* heeft, en HAS-A voor het *gedrag*: hij geeft het werk door aan het ingepakte object. Zo voeg je gedrag toe met compositie in plaats van met overerving.
 
 ---
 
