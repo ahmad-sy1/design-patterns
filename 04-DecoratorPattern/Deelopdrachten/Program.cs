@@ -42,6 +42,13 @@ namespace NotificationApp
             loggingSms.Send("0612345678", "Je rooster is gewijzigd.");
 
 
+            // Opdracht 7 - UrgentNotificationDecorator
+            Console.WriteLine("=== Opdracht 7 ===");
+            INotificationService urgentDecoratedEmail =
+                new UrgentNotificationDecorator(new EmailNotificationService());
+            urgentDecoratedEmail.Send("student@school.nl", "De les van vandaag vervalt.");
+
+
             Console.ReadLine();
         }
     }

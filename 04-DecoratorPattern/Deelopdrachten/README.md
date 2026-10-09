@@ -18,7 +18,8 @@ Console-applicatie voor het versturen van notificaties (email en sms), uit te br
 │   └── UrgentSmsNotificationService.cs
 ├── Decorators/
 │   ├── NotificationDecorator.cs             // abstracte decorator
-│   └── LoggingNotificationDecorator.cs      // concrete decorator
+│   ├── LoggingNotificationDecorator.cs      // concrete decorator
+│   └── UrgentNotificationDecorator.cs       // concrete decorator
 └── Program.cs
 ```
 
@@ -209,7 +210,32 @@ Nee. De decorator kent alleen `INotificationService` en niet `EmailNotificationS
 
 Maak een decorator die [URGENT] voor het bericht plaatst en doorstuurt naar het ingepakte object. INotificationService, EmailNotificationService en SmsNotificationService mogen niet aangepast worden.
 
-**Uitwerking:** _nog in te vullen_
+**Uitwerking:**
+
+```csharp
+public class UrgentNotificationDecorator : NotificationDecorator
+{
+    public UrgentNotificationDecorator(INotificationService notificationService)
+        : base(notificationService)
+    {
+    }
+
+    public override void Send(string recipient, string message)
+    {
+        notificationService.Send(recipient, $"[URGENT] {message}");
+    }
+}
+```
+
+Er is alleen een nieuwe klasse bijgekomen. De interface en de services zijn niet aangepast (**Open/Closed-principe**).
+
+**Testresultaat:**
+
+```
+EMAIL
+Aan: student@school.nl
+Bericht: [URGENT] De les van vandaag vervalt.
+```
 
 ---
 
