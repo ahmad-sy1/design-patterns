@@ -362,7 +362,26 @@ Bericht: [URGENT] [12:38] Het lokaal is gewijzigd.
 
 Vergelijk decorators met één Send-methode met boolean parameters (urgent, logging, timestamp): leesbaarheid van true, true, false, wat er gebeurt bij Encryption/Retry/AuditLogging, welke class te veel verantwoordelijkheden krijgt, en wat overzichtelijker is.
 
-**Uitwerking:** _nog in te vullen_
+**Uitwerking:**
+
+**Leesbaarheid van `true, true, false`**
+`Send("0612345678", "Hoi", true, true, false)` zegt niets. Je moet de methode openen om te weten welke `true` urgent is en welke logging. Bij decorators lees je het meteen: `new LoggingNotificationDecorator(new UrgentNotificationDecorator(...))`.
+
+**Wat gebeurt er bij Encryption, Retry en AuditLogging?**
+Bij de boolean-aanpak krijgt `Send` steeds meer parameters en steeds meer `if`-blokken. Elke aanroep in de hele code moet dan aangepast worden, en de interface `INotificationService` verandert. Bij decorators maak je gewoon een nieuwe klasse, bijvoorbeeld `EncryptionNotificationDecorator`, zonder bestaande code aan te passen.
+
+**Welke class krijgt te veel verantwoordelijkheden?**
+De service zelf, bijvoorbeeld `EmailNotificationService`. Die moet dan versturen, loggen, urgent maken, een timestamp toevoegen enzovoort. Dat is in strijd met het **Single Responsibility-principe**. Ook moet elke service (Email, Sms) die logica allemaal zelf hebben.
+
+**Wat is overzichtelijker?**
+Decorators. Elke klasse heeft één taak, je kunt combinaties vrij kiezen en de volgorde bepalen, en nieuwe functionaliteit toevoegen zonder bestaande code aan te passen (Open/Closed).
+
+| | Boolean parameters | Decorators |
+|---|---|---|
+| Leesbaarheid | `true, true, false` is onduidelijk | namen van klassen zeggen wat er gebeurt |
+| Nieuwe extra | `Send` en alle aanroepen aanpassen | nieuwe klasse toevoegen |
+| Verantwoordelijkheden | één klasse doet alles | elke klasse één taak |
+| Volgorde kiezen | vast in de code | zelf te kiezen |
 
 ---
 
