@@ -66,6 +66,25 @@ namespace NotificationApp
             variantB.Send("student@school.nl", "De toets begint over 10 minuten.");
 
 
+            // Opdracht 10 - Logging -> Timestamp -> Urgent -> Email / Sms
+            Console.WriteLine("=== Opdracht 10 Email ===");
+            INotificationService timestampEmail =
+                new LoggingNotificationDecorator(
+                    new TimestampNotificationDecorator(
+                        new UrgentNotificationDecorator(
+                            new EmailNotificationService())));
+            timestampEmail.Send("student@school.nl", "Het lokaal is gewijzigd.");
+
+            // Eindopdracht - SMS, urgent, timestamp en logging
+            Console.WriteLine("=== Opdracht 10 Sms / Eindopdracht ===");
+            INotificationService eindopdracht =
+                new LoggingNotificationDecorator(
+                    new TimestampNotificationDecorator(
+                        new UrgentNotificationDecorator(
+                            new SmsNotificationService())));
+            eindopdracht.Send("0612345678", "Het lokaal is gewijzigd.");
+
+
             Console.ReadLine();
         }
     }

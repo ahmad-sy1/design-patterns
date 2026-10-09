@@ -19,7 +19,8 @@ Console-applicatie voor het versturen van notificaties (email en sms), uit te br
 ├── Decorators/
 │   ├── NotificationDecorator.cs             // abstracte decorator
 │   ├── LoggingNotificationDecorator.cs      // concrete decorator
-│   └── UrgentNotificationDecorator.cs       // concrete decorator
+│   ├── UrgentNotificationDecorator.cs       // concrete decorator
+│   └── TimestampNotificationDecorator.cs    // concrete decorator
 └── Program.cs
 ```
 
@@ -320,7 +321,40 @@ Ja. De e-mail is in beide varianten hetzelfde, maar de logregel verschilt. Elke 
 
 Maak een decorator die de huidige tijd [HH:mm] voor het bericht zet. Test de combinatie Logging → Timestamp → Urgent → Email en daarna dezelfde decorators met SMS.
 
-**Uitwerking:** _nog in te vullen_
+**Uitwerking:**
+
+```csharp
+public override void Send(string recipient, string message)
+{
+    notificationService.Send(recipient, $"[{DateTime.Now:HH:mm}] {message}");
+}
+```
+
+```csharp
+INotificationService timestampEmail =
+    new LoggingNotificationDecorator(
+        new TimestampNotificationDecorator(
+            new UrgentNotificationDecorator(
+                new EmailNotificationService())));
+```
+
+Voor SMS hoef je alleen de binnenste `EmailNotificationService` te vervangen door `SmsNotificationService`.
+
+**Testresultaat:**
+
+```
+LOG: notificatie naar student@school.nl: Het lokaal is gewijzigd.
+EMAIL
+Aan: student@school.nl
+Bericht: [URGENT] [12:38] Het lokaal is gewijzigd.
+
+LOG: notificatie naar 0612345678: Het lokaal is gewijzigd.
+SMS
+Aan: 0612345678
+Bericht: [URGENT] [12:38] Het lokaal is gewijzigd.
+```
+
+`[URGENT]` staat vóór de tijd, omdat `Urgent` dichter bij de service zit en dus als laatste iets vóór het bericht zet. Ook hier zie je dat de volgorde uitmaakt.
 
 ---
 
