@@ -4,26 +4,22 @@ namespace GameApp
     {
         static void Main(string[] args)
         {
-            GraphicsSystem graphics = new GraphicsSystem();
-            AudioSystem audio = new AudioSystem();
-            SaveSystem saveSystem = new SaveSystem();
-            NetworkService network = new NetworkService();
-            GameEngine gameEngine = new GameEngine();
+            GameManager game = new GameManager();
 
-            graphics.Initialize();
-            graphics.SetResolution(1920, 1080);
+            Console.WriteLine("=== NormalMode starten ===");
+            game.StartGame(GameMode.Normal);
 
-            audio.Initialize();
-            audio.SetVolume(70);
+            Console.WriteLine();
+            Console.WriteLine("=== NormalMode stoppen ===");
+            game.StopGame();
 
-            saveSystem.LoadSettings();
-            saveSystem.LoadPlayer();
+            Console.WriteLine();
+            Console.WriteLine("=== DeveloperMode starten ===");
+            game.StartGame(GameMode.Developer);
 
-            network.Connect();
-            network.Login();
-
-            gameEngine.LoadWorld();
-            gameEngine.Start();
+            Console.WriteLine();
+            Console.WriteLine("=== DeveloperMode stoppen ===");
+            game.StopGame();
 
             Console.ReadLine();
         }

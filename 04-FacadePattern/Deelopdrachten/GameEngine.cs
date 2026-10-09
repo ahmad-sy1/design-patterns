@@ -4,5 +4,7 @@ namespace GameApp
     {
         public void LoadWorld() { Console.WriteLine("Gamewereld geladen."); }
         public void Start() { Console.WriteLine("Game gestart!"); }
+        public void Stop() { Console.WriteLine("Game gestopt."); }
+        public void UnloadWorld() { Console.WriteLine("Gamewereld afgesloten."); }
     }
 }
