@@ -243,7 +243,38 @@ Bericht: [URGENT] De les van vandaag vervalt.
 
 Teken welke objecten elkaar aanroepen bij Logging → Urgent → Email en beantwoord welke Send() eerst en daarna wordt uitgevoerd, welke class de echte e-mail verstuurt, en waarom een decorator een andere decorator kan bevatten.
 
-**Uitwerking:** _nog in te vullen_
+**Uitwerking:**
+
+```csharp
+INotificationService variantA =
+    new LoggingNotificationDecorator(
+        new UrgentNotificationDecorator(
+            new EmailNotificationService()));
+```
+
+```
+Program
+   |  Send(recipient, "De toets begint over 10 minuten.")
+   v
+LoggingNotificationDecorator      -> schrijft LOG-regel
+   |  Send(recipient, "De toets begint over 10 minuten.")
+   v
+UrgentNotificationDecorator       -> zet [URGENT] voor het bericht
+   |  Send(recipient, "[URGENT] De toets begint over 10 minuten.")
+   v
+EmailNotificationService          -> verstuurt de e-mail
+```
+
+**Welke `Send()` wordt eerst uitgevoerd, en welke daarna?**
+1. `LoggingNotificationDecorator.Send()`, de buitenste laag
+2. `UrgentNotificationDecorator.Send()`
+3. `EmailNotificationService.Send()`, de binnenste laag
+
+**Welke class verstuurt de echte e-mail?**
+`EmailNotificationService`. De decorators voegen alleen iets toe en geven het bericht dan door.
+
+**Waarom kan een decorator een andere decorator bevatten?**
+Het field `notificationService` is van het type `INotificationService`, en elke decorator **is** een `INotificationService`. Daarom kan een decorator zowel een echte service als een andere decorator inpakken. Zo kun je ze eindeloos in elkaar stapelen.
 
 ---
 

@@ -49,6 +49,14 @@ namespace NotificationApp
             urgentDecoratedEmail.Send("student@school.nl", "De les van vandaag vervalt.");
 
 
+            // Opdracht 8 en 9 - variant A: Logging -> Urgent -> Email
+            Console.WriteLine("=== Opdracht 8/9 variant A ===");
+            INotificationService variantA =
+                new LoggingNotificationDecorator(
+                    new UrgentNotificationDecorator(
+                        new EmailNotificationService()));
+            variantA.Send("student@school.nl", "De toets begint over 10 minuten.");
+
             Console.ReadLine();
         }
     }
