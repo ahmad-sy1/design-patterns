@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdapterPattern.Deelopdracht
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdapterPattern.Hoofdopdracht", "03-AdapterPattern\Hoofdopdracht\AdapterPattern.csproj", "{75E3BCEF-FE5E-4118-A3B3-F702D695BF10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecoratorPattern.Deelopdrachten", "04-DecoratorPattern\Deelopdrachten\DecoratorPattern.csproj", "{0F94DBB0-670E-4E97-8043-2BD8D90A9207}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecoratorPattern.Deelopdrachten", "05-DecoratorPattern\Deelopdrachten\DecoratorPattern.csproj", "{0F94DBB0-670E-4E97-8043-2BD8D90A9207}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

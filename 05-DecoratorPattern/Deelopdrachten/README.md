@@ -5,7 +5,7 @@ Console-applicatie voor het versturen van notificaties (email en sms), uit te br
 ## Structuur
 
 ```
-04-DecoratorPattern/Deelopdrachten/
+05-DecoratorPattern/Deelopdrachten/
 ├── Interfaces/
 │   └── INotificationService.cs              // component-interface
 ├── Services/
