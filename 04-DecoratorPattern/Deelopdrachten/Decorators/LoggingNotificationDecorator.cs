@@ -9,8 +9,8 @@ namespace NotificationApp
 
         public override void Send(string recipient, string message)
         {
-            // TODO Opdracht 6: voeg hier logging toe
-            // TODO Opdracht 6: geef daarna het versturen door aan notificationService
+            Console.WriteLine($"LOG: notificatie naar {recipient}: {message}");
+            notificationService.Send(recipient, message);
         }
     }
 }

@@ -168,7 +168,40 @@ De decorator gebruikt IS-A zodat hij hetzelfde *type* heeft, en HAS-A voor het *
 
 Maak LoggingNotificationDecorator.Send() af, test met Email en daarna met SMS. Vraag: moest de decorator aangepast worden voor SMS? Waarom wel of niet?
 
-**Uitwerking:** _nog in te vullen_
+**Uitwerking:**
+
+```csharp
+public override void Send(string recipient, string message)
+{
+    Console.WriteLine($"LOG: notificatie naar {recipient}: {message}");
+    notificationService.Send(recipient, message);
+}
+```
+
+```csharp
+INotificationService loggingEmail =
+    new LoggingNotificationDecorator(new EmailNotificationService());
+
+INotificationService loggingSms =
+    new LoggingNotificationDecorator(new SmsNotificationService());
+```
+
+**Testresultaat:**
+
+```
+LOG: notificatie naar student@school.nl: Je rooster is gewijzigd.
+EMAIL
+Aan: student@school.nl
+Bericht: Je rooster is gewijzigd.
+
+LOG: notificatie naar 0612345678: Je rooster is gewijzigd.
+SMS
+Aan: 0612345678
+Bericht: Je rooster is gewijzigd.
+```
+
+**Moest de decorator aangepast worden voor SMS?**
+Nee. De decorator kent alleen `INotificationService` en niet `EmailNotificationService` of `SmsNotificationService`. Elke service die de interface implementeert, kan erin. Eén `LoggingNotificationDecorator` vervangt dus zowel `LoggedEmailNotificationService` als `LoggedSmsNotificationService`.
 
 ---
 
