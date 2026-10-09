@@ -1,6 +1,6 @@
 # Facade Pattern — GameApp (Startopdracht)
 
-Console-applicatie die een game opstart via losse subsystemen (graphics, audio, opslag, netwerk en engine).
+Console-applicatie die een game start via losse subsystemen.
 
 ## Structuur
 
@@ -31,17 +31,7 @@ Console-applicatie die een game opstart via losse subsystemen (graphics, audio, 
 
 ### Uitwerking
 
-De sourcebestanden staan in de console-app `FacadePattern.csproj`, namespace `GameApp`. De app bestaat uit vijf subsystemen:
-
-| Klasse | Bestand | Methodes |
-|---|---|---|
-| `GraphicsSystem` | `GraphicSystem.cs` | `Initialize`, `SetResolution` |
-| `AudioSystem` | `AudioSystem.cs` | `Initialize`, `SetVolume` |
-| `SaveSystem` | `SaveSystem.cs` | `LoadSettings`, `LoadPlayer` |
-| `NetworkService` | `NetworkService.cs` | `Connect`, `Login` |
-| `GameEngine` | `GameEngine.cs` | `LoadWorld`, `Start` |
-
-`Program` maakt alle vijf subsystemen zelf aan en roept daarna tien methodes aan, in een vaste volgorde en met vaste waarden (1920x1080, volume 70%). Let op: het bestand heet `GraphicSystem.cs`, maar de klasse heet `GraphicsSystem`.
+De bestanden staan in `FacadePattern.csproj`. `Program` maakt vijf subsystemen aan en roept ze zelf één voor één aan.
 
 ```
 Program
@@ -71,7 +61,7 @@ Game gestart!
 ### Antwoorden op de vragen
 
 **Werkt prima, toch?**
-Ja, het programma doet wat het moet doen. Maar `Program` moet wel alles weten: welke vijf subsystemen er zijn, welke methodes ze hebben, met welke waarden ze aangeroepen worden en in welke volgorde. Dat gaat goed zolang er maar één manier is om de game te starten. Komen er meer manieren bij (zie deel 2), dan moet al die kennis op meerdere plekken in `Program` staan.
+Ja. Maar `Program` moet alles weten: welke subsystemen, welke methodes en in welke volgorde. Bij meer manieren van starten wordt dat lastig.
 
 ---
 
@@ -87,20 +77,18 @@ Ja, het programma doet wat het moet doen. Maar `Program` moet wel alles weten: w
 
 ### Uitwerking
 
-**NormalMode en DeveloperMode**
-
-DeveloperMode is bedoeld om tijdens het ontwikkelen snel te testen. Daarom verschilt hij op een paar punten van NormalMode:
+**Modi**
 
 | | NormalMode | DeveloperMode |
 |---|---|---|
 | Resolutie | 1920x1080 | 1280x720 |
-| Volume | 70% | 0% (geluid uit) |
-| Debugconsole en FPS-teller | nee | ja |
-| Spelergegevens opslaan bij stoppen | ja | nee, zodat testvoortgang de echte save niet overschrijft |
+| Volume | 70% | 0% |
+| Debugconsole en FPS | nee | ja |
+| Speler opslaan bij stoppen | ja | nee |
 
-**Subsystemen voor stoppen**
+**Stoppen**
 
-Voor het stoppen heeft elk subsysteem een tegenhanger van zijn startmethode gekregen. Voor DeveloperMode is er één nieuw subsysteem bijgekomen: `DebugConsole`.
+Elk subsysteem heeft een stopmethode gekregen. `DebugConsole` is nieuw.
 
 | Klasse | Starten | Stoppen |
 |---|---|---|
@@ -111,11 +99,9 @@ Voor het stoppen heeft elk subsysteem een tegenhanger van zijn startmethode gekr
 | `GameEngine` | `LoadWorld`, `Start` | `Stop`, `UnloadWorld` |
 | `DebugConsole` (nieuw) | `Open`, `ShowFps` | `Close` |
 
-Bij stoppen is de volgorde ongeveer omgekeerd: eerst de game stoppen, dan opslaan, dan uitloggen en als laatste audio en graphics afsluiten.
-
 **Eerste versie: alles in `Program`**
 
-In de eerste versie staan alle vier de situaties (NormalMode starten en stoppen, DeveloperMode starten en stoppen) achter elkaar in `Main`. `Program` werd daardoor 86 regels lang. Een stuk ervan:
+Alles stond in `Main`, 86 regels. Veel code stond er twee keer:
 
 ```csharp
 // NormalMode starten
@@ -160,7 +146,7 @@ gameEngine.Start();
 
 **Herschreven versie: `GameManager`**
 
-Het starten en stoppen is verplaatst naar een eigen klasse, `GameManager`. Die maakt de subsystemen aan, onthoudt in welke modus de game gestart is, en roept de subsystemen in de juiste volgorde aan. De verschillen tussen de modi staan op één plek, in een `if`. De modus is een enum `GameMode` en geen `bool`, zodat je in `Program` meteen leest welke modus bedoeld is.
+Starten en stoppen staat nu in `GameManager`. De modus is een enum `GameMode`.
 
 ```csharp
 public void StartGame(GameMode mode)
@@ -197,10 +183,6 @@ public void StartGame(GameMode mode)
 }
 ```
 
-`StopGame()` werkt op dezelfde manier. Hij gebruikt de onthouden modus om te bepalen of de spelergegevens opgeslagen worden en of de debugconsole gesloten moet worden.
-
-`Program` kent nu alleen nog `GameManager` en `GameMode`:
-
 ```csharp
 GameManager game = new GameManager();
 
@@ -213,7 +195,7 @@ game.StopGame();
 
 ### Testresultaat
 
-De eerste versie en de herschreven versie geven precies dezelfde uitvoer:
+Beide versies geven dezelfde uitvoer:
 
 ```
 === NormalMode starten ===
@@ -265,20 +247,16 @@ Graphics afgesloten.
 
 ### Antwoorden op de vragen
 
-**3. Welke problemen beginnen te ontstaan in je code?**
-- **Dubbele code:** NormalMode en DeveloperMode starten bijna op dezelfde manier. Acht van de tien aanroepen zijn gelijk, alleen een paar waarden en de debugconsole verschillen. Bij stoppen is het net zo.
-- **`Program` weet te veel:** `Program` kent zes subsystemen, al hun methodes, de juiste waarden en de juiste volgorde. Dat is sterke koppeling.
-- **Volgorde kan misgaan:** bij stoppen moet je eerst opslaan en pas daarna uitloggen. Die volgorde staat op meerdere plekken, en op elke plek kun je hem fout doen.
-- **Wijzigen is foutgevoelig:** komt er een subsysteem bij, of verandert er een stap, dan moet je elk blok in `Program` aanpassen. Vergeet je er één, dan werkt die modus anders.
-- **Te veel verantwoordelijkheden:** `Program` moet de app starten én precies weten hoe de game technisch opstart en afsluit. Dat is in strijd met het **Single Responsibility-principe**.
+**3. Welke problemen beginnen te ontstaan?**
+- Dubbele code: de modi lijken bijna helemaal op elkaar.
+- `Program` weet te veel: alle subsystemen, methodes en de volgorde.
+- Bij een wijziging moet je elk blok aanpassen. Vergeet je er één, dan gaat het mis.
 
-**4. Hoe zou je die problemen kunnen oplossen?**
-- Schrijf de stappen die in beide modi gelijk zijn maar één keer, en laat alleen de verschillen afhangen van de modus.
-- Geef één klasse de verantwoordelijkheid voor het starten en stoppen van de game. Die klasse kent de subsystemen en de volgorde.
-- `Program` vraagt die klasse alleen nog "start in deze modus" en "stop". Hoe dat gebeurt, hoeft `Program` niet te weten.
+**4. Hoe los je dat op?**
+Zet starten en stoppen in één klasse. `Program` zegt alleen nog "start" of "stop".
 
-**5. Herschrijf de GameApp naar een betere versie.**
-Zie **Herschreven versie: `GameManager`** hierboven. `Program` ging van 86 naar 27 regels en kent geen subsystemen meer. Elke stap staat nog maar één keer in de code.
+**5. Betere versie**
+Zie `GameManager` hierboven. `Program` ging van 86 naar 27 regels.
 
 ---
 
@@ -293,17 +271,13 @@ Zie **Herschreven versie: `GameManager`** hierboven. `Program` ging van 86 naar 
 
 ### Uitwerking
 
-**1. Het Facade Pattern**
+**1. Facade Pattern**
 
-De PowerPoint staat niet in deze repo. Deze samenvatting is gebaseerd op hoofdstuk 7 van Head First Design Patterns.
+Een facade is één simpele klasse vóór een groep ingewikkelde klassen. De client praat alleen met de facade. (De PowerPoint staat niet in de repo, dit komt uit Head First H7.)
 
-Een facade biedt één eenvoudige interface voor een groep klassen in een subsysteem. De client praat alleen met de facade, en de facade roept de juiste klassen in de juiste volgorde aan. De subsystemen blijven bestaan en zijn nog steeds los te gebruiken. De facade maakt ze alleen makkelijker te gebruiken.
+**2. Online en offline**
 
-Het pattern volgt het **Principle of Least Knowledge**: praat alleen met je directe vrienden. `Program` hoeft niet meer te weten hoe de game technisch opstart, alleen dát hij moet starten.
-
-**2. Online-modus en offline-modus**
-
-Er is een tweede enum bijgekomen, `ConnectionMode`, met `Online` en `Offline`. `StartGame` krijgt die mee en onthoudt hem, net als de `GameMode`. Alleen bij `Online` wordt `NetworkService` aangeroepen, zowel bij starten (`Connect`, `Login`) als bij stoppen (`Logout`, `Disconnect`):
+Nieuwe enum `ConnectionMode`. `NetworkService` wordt alleen bij `Online` aangeroepen:
 
 ```csharp
 if (connection == ConnectionMode.Online)
@@ -313,14 +287,9 @@ if (connection == ConnectionMode.Online)
 }
 ```
 
-De modi zijn los te combineren, dus DeveloperMode kan zowel online als offline. `NetworkService` en de andere subsystemen zijn hiervoor niet aangepast. Alleen de facade en `Program` zijn veranderd.
+**3. Facade Pattern**
 
-**3. Voldoet de GameApp aan het Facade Pattern?**
-
-De `GameManager` uit deel 2 was eigenlijk al een facade. In deel 3 is hij daarom alleen nog op twee punten aangepast:
-
-- **Hernoemd naar `GameFacade`**, zodat je aan de naam ziet welk pattern er gebruikt wordt (net als `HomeTheaterFacade` in het boek).
-- **Subsystemen via de constructor:** de facade maakt de subsystemen niet meer zelf aan, maar krijgt ze mee. De facade *gebruikt* de subsystemen, maar is er geen eigenaar van. Zo kan de client een subsysteem ook nog direct gebruiken als dat nodig is.
+`GameManager` heet nu `GameFacade` en krijgt de subsystemen via de constructor:
 
 ```csharp
 GameFacade game = new GameFacade(
@@ -336,15 +305,9 @@ game.StopGame();
 ```
 
 Controle:
-
-| Eis van het Facade Pattern | Voldoet? | Hoe in GameApp |
-|---|---|---|
-| Eén klasse met een eenvoudige interface voor het subsysteem | ja | `GameFacade` met alleen `StartGame` en `StopGame` |
-| De client gebruikt alleen de facade | ja | `Program` roept geen methodes van subsystemen aan, alleen `StartGame` en `StopGame` |
-| De facade geeft het werk door aan de subsystemen | ja | elke stap is een aanroep van een subsysteem; de facade bepaalt alleen welke en in welke volgorde |
-| De subsystemen kennen de facade niet | ja | geen enkel subsysteem verwijst naar `GameFacade` |
-| De subsystemen blijven los bruikbaar | ja | ze zijn `public` en worden via de constructor meegegeven |
-| Principle of Least Knowledge | ja | `Program` praat alleen met `GameFacade` |
+- `Program` gebruikt alleen `GameFacade`.
+- `GameFacade` geeft het werk door aan de subsystemen.
+- De subsystemen kennen de facade niet en zijn ook los te gebruiken.
 
 ```
           Program (client)
@@ -425,30 +388,16 @@ Audio afgesloten.
 Graphics afgesloten.
 ```
 
-Offline ontbreken de regels van `NetworkService` (verbinden, inloggen, uitloggen, verbinding verbreken). De rest is gelijk aan online.
-
 ### Antwoorden op de vragen
 
-**4. Wat zijn de verschillen en overeenkomsten tussen Facade en Adapter?**
+**4. Facade en Adapter**
 
-Overeenkomsten:
-- Allebei zetten ze een klasse tussen de client en bestaande code.
-- Allebei laten ze de klassen erachter ongewijzigd: bij Adapter bleef `WhatsAppClient` ongewijzigd, en voor de facade in deel 3 zijn de subsystemen niet aangepast.
-- Allebei zorgen ze voor lossere koppeling: de client kent alleen de adapter of de facade.
-
-Verschillen:
+Overeenkomst: allebei zetten ze een klasse tussen de client en bestaande code, zonder die code aan te passen.
 
 | | Adapter | Facade |
 |---|---|---|
-| Doel | **Passend maken:** een interface omzetten naar de interface die de client verwacht | **Makkelijker maken:** één eenvoudige interface vóór een ingewikkeld subsysteem |
-| Aantal ingepakte klassen | meestal één (`WhatsAppClient`) | meerdere (zes subsystemen) |
-| Interface | implementeert een bestaande interface (`INotificationService`) | bedenkt een nieuwe, eenvoudigere interface (`StartGame`, `StopGame`) |
-| Waarom nodig | de interfaces passen niet op elkaar | de interfaces passen wel, maar het gebruik is te ingewikkeld |
+| Doel | passend maken | makkelijker maken |
+| Pakt in | meestal één klasse | meerdere klassen |
+| Interface | bestaande interface | nieuwe, simpele interface |
 
-Kort gezegd: een adapter verandert de interface, een facade vereenvoudigt hem.
-
-| Rol in het pattern | Klasse |
-|---|---|
-| Client | `Program` |
-| Facade | `GameFacade` |
-| Subsystemen | `GraphicsSystem`, `AudioSystem`, `SaveSystem`, `NetworkService`, `GameEngine`, `DebugConsole` |
+Kort: een adapter verandert de interface, een facade maakt hem simpeler.
