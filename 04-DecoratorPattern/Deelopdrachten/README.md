@@ -397,7 +397,13 @@ Bepaal voor situatie A t/m E of Adapter, Facade of Decorator het beste past.
 
 Vul de tabel in (probleem + onthoudzin) met de begrippen passend maken, makkelijker maken en uitbreiden.
 
-**Uitwerking:** _nog in te vullen_
+**Uitwerking:**
+
+| Pattern | Probleem | Onthoudzin |
+|---|---|---|
+| Adapter | Een bestaande klasse heeft een andere interface dan de client verwacht. | **Passend maken:** zet een interface om naar een interface die de client wél kent. |
+| Facade | Een subsysteem met veel klassen is ingewikkeld om te gebruiken. | **Makkelijker maken:** één simpele interface vóór een ingewikkeld geheel. |
+| Decorator | Je wilt extra gedrag toevoegen zonder bestaande klassen aan te passen en zonder class explosion. | **Uitbreiden:** pak een object in en voeg gedrag toe, met dezelfde interface. |
 
 ---
 
