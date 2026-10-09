@@ -411,4 +411,60 @@ Vul de tabel in (probleem + onthoudzin) met de begrippen passend maken, makkelij
 
 Bouw een notificatie die via SMS gaat, urgent is, een timestamp bevat en gelogd wordt, zonder bestaande classes aan te passen. Laat de objectstructuur als schema zien met de echte classnamen.
 
-**Uitwerking:** _nog in te vullen_
+**Uitwerking:**
+
+```csharp
+INotificationService eindopdracht =
+    new LoggingNotificationDecorator(
+        new TimestampNotificationDecorator(
+            new UrgentNotificationDecorator(
+                new SmsNotificationService())));
+
+eindopdracht.Send("0612345678", "Het lokaal is gewijzigd.");
+```
+
+Er is geen enkele klasse aangepast. Alleen bestaande decorators zijn om de `SmsNotificationService` heen gezet.
+
+```
++-------------------------------------------------------------+
+| LoggingNotificationDecorator                                |
+|   +-----------------------------------------------------+   |
+|   | TimestampNotificationDecorator                      |   |
+|   |   +---------------------------------------------+   |   |
+|   |   | UrgentNotificationDecorator                 |   |   |
+|   |   |   +-------------------------------------+   |   |   |
+|   |   |   | SmsNotificationService              |   |   |   |
+|   |   |   +-------------------------------------+   |   |   |
+|   |   +---------------------------------------------+   |   |
+|   +-----------------------------------------------------+   |
++-------------------------------------------------------------+
+```
+
+```
+                <<interface>>
+             INotificationService  <------------------------+
+                      |                                     | HAS-A
+         +------------+-------------+                       |
+         |            |             |                       |
+       Email         Sms     NotificationDecorator ---------+
+                                    |
+                 +------------------+------------------+
+                 |                  |                  |
+              Logging           Urgent             Timestamp
+```
+
+**Testresultaat:**
+
+```
+LOG: notificatie naar 0612345678: Het lokaal is gewijzigd.
+SMS
+Aan: 0612345678
+Bericht: [URGENT] [12:38] Het lokaal is gewijzigd.
+```
+
+| Rol in het pattern | Klasse |
+|---|---|
+| Component | `INotificationService` |
+| Concreet component | `EmailNotificationService`, `SmsNotificationService` |
+| Decorator | `NotificationDecorator` |
+| Concrete decorators | `LoggingNotificationDecorator`, `UrgentNotificationDecorator`, `TimestampNotificationDecorator` |
