@@ -13,8 +13,9 @@ Console-applicatie die een game opstart via losse subsystemen (graphics, audio, 
 ├── GameEngine.cs
 ├── DebugConsole.cs       // deel 2: extra subsysteem voor DeveloperMode
 ├── GameMode.cs           // deel 2: Normal of Developer
-├── GameManager.cs        // deel 2: herschreven versie, start en stopt de game
-└── Program.cs
+├── ConnectionMode.cs     // deel 3: Online of Offline
+├── GameFacade.cs         // deel 3: facade (in deel 2 nog GameManager)
+└── Program.cs            // client
 ```
 
 ---
@@ -292,4 +293,162 @@ Zie **Herschreven versie: `GameManager`** hierboven. `Program` ging van 86 naar 
 
 ### Uitwerking
 
-_nog in te vullen_
+**1. Het Facade Pattern**
+
+De PowerPoint staat niet in deze repo. Deze samenvatting is gebaseerd op hoofdstuk 7 van Head First Design Patterns.
+
+Een facade biedt één eenvoudige interface voor een groep klassen in een subsysteem. De client praat alleen met de facade, en de facade roept de juiste klassen in de juiste volgorde aan. De subsystemen blijven bestaan en zijn nog steeds los te gebruiken. De facade maakt ze alleen makkelijker te gebruiken.
+
+Het pattern volgt het **Principle of Least Knowledge**: praat alleen met je directe vrienden. `Program` hoeft niet meer te weten hoe de game technisch opstart, alleen dát hij moet starten.
+
+**2. Online-modus en offline-modus**
+
+Er is een tweede enum bijgekomen, `ConnectionMode`, met `Online` en `Offline`. `StartGame` krijgt die mee en onthoudt hem, net als de `GameMode`. Alleen bij `Online` wordt `NetworkService` aangeroepen, zowel bij starten (`Connect`, `Login`) als bij stoppen (`Logout`, `Disconnect`):
+
+```csharp
+if (connection == ConnectionMode.Online)
+{
+    network.Connect();
+    network.Login();
+}
+```
+
+De modi zijn los te combineren, dus DeveloperMode kan zowel online als offline. `NetworkService` en de andere subsystemen zijn hiervoor niet aangepast. Alleen de facade en `Program` zijn veranderd.
+
+**3. Voldoet de GameApp aan het Facade Pattern?**
+
+De `GameManager` uit deel 2 was eigenlijk al een facade. In deel 3 is hij daarom alleen nog op twee punten aangepast:
+
+- **Hernoemd naar `GameFacade`**, zodat je aan de naam ziet welk pattern er gebruikt wordt (net als `HomeTheaterFacade` in het boek).
+- **Subsystemen via de constructor:** de facade maakt de subsystemen niet meer zelf aan, maar krijgt ze mee. De facade *gebruikt* de subsystemen, maar is er geen eigenaar van. Zo kan de client een subsysteem ook nog direct gebruiken als dat nodig is.
+
+```csharp
+GameFacade game = new GameFacade(
+    new GraphicsSystem(),
+    new AudioSystem(),
+    new SaveSystem(),
+    new NetworkService(),
+    new GameEngine(),
+    new DebugConsole());
+
+game.StartGame(GameMode.Normal, ConnectionMode.Online);
+game.StopGame();
+```
+
+Controle:
+
+| Eis van het Facade Pattern | Voldoet? | Hoe in GameApp |
+|---|---|---|
+| Eén klasse met een eenvoudige interface voor het subsysteem | ja | `GameFacade` met alleen `StartGame` en `StopGame` |
+| De client gebruikt alleen de facade | ja | `Program` roept geen methodes van subsystemen aan, alleen `StartGame` en `StopGame` |
+| De facade geeft het werk door aan de subsystemen | ja | elke stap is een aanroep van een subsysteem; de facade bepaalt alleen welke en in welke volgorde |
+| De subsystemen kennen de facade niet | ja | geen enkel subsysteem verwijst naar `GameFacade` |
+| De subsystemen blijven los bruikbaar | ja | ze zijn `public` en worden via de constructor meegegeven |
+| Principle of Least Knowledge | ja | `Program` praat alleen met `GameFacade` |
+
+```
+          Program (client)
+              |
+              |  StartGame(mode, connection) / StopGame()
+              v
+         +------------+
+         | GameFacade |
+         +------------+
+              |
+   +----------+-----------+-------------+------------+--------------+
+   |          |           |             |            |              |
+Graphics    Audio     SaveSystem  NetworkService  GameEngine  DebugConsole
+System      System                (alleen online)             (alleen developer)
+```
+
+### Testresultaat
+
+```
+=== NormalMode online starten ===
+Graphics geïnitialiseerd.
+Resolutie ingesteld op 1920x1080.
+Audio geïnitialiseerd.
+Volume ingesteld op 70%.
+Instellingen geladen.
+Spelergegevens geladen.
+Verbonden met gameserver.
+Speler ingelogd.
+Gamewereld geladen.
+Game gestart!
+
+=== NormalMode online stoppen ===
+Game gestopt.
+Gamewereld afgesloten.
+Spelergegevens opgeslagen.
+Instellingen opgeslagen.
+Speler uitgelogd.
+Verbinding met gameserver verbroken.
+Audio afgesloten.
+Graphics afgesloten.
+
+=== NormalMode offline starten ===
+Graphics geïnitialiseerd.
+Resolutie ingesteld op 1920x1080.
+Audio geïnitialiseerd.
+Volume ingesteld op 70%.
+Instellingen geladen.
+Spelergegevens geladen.
+Gamewereld geladen.
+Game gestart!
+
+=== NormalMode offline stoppen ===
+Game gestopt.
+Gamewereld afgesloten.
+Spelergegevens opgeslagen.
+Instellingen opgeslagen.
+Audio afgesloten.
+Graphics afgesloten.
+
+=== DeveloperMode offline starten ===
+Graphics geïnitialiseerd.
+Resolutie ingesteld op 1280x720.
+Audio geïnitialiseerd.
+Volume ingesteld op 0%.
+Instellingen geladen.
+Spelergegevens geladen.
+Debugconsole geopend.
+FPS-teller zichtbaar.
+Gamewereld geladen.
+Game gestart!
+
+=== DeveloperMode offline stoppen ===
+Game gestopt.
+Gamewereld afgesloten.
+Instellingen opgeslagen.
+Debugconsole gesloten.
+Audio afgesloten.
+Graphics afgesloten.
+```
+
+Offline ontbreken de regels van `NetworkService` (verbinden, inloggen, uitloggen, verbinding verbreken). De rest is gelijk aan online.
+
+### Antwoorden op de vragen
+
+**4. Wat zijn de verschillen en overeenkomsten tussen Facade en Adapter?**
+
+Overeenkomsten:
+- Allebei zetten ze een klasse tussen de client en bestaande code.
+- Allebei laten ze de klassen erachter ongewijzigd: bij Adapter bleef `WhatsAppClient` ongewijzigd, en voor de facade in deel 3 zijn de subsystemen niet aangepast.
+- Allebei zorgen ze voor lossere koppeling: de client kent alleen de adapter of de facade.
+
+Verschillen:
+
+| | Adapter | Facade |
+|---|---|---|
+| Doel | **Passend maken:** een interface omzetten naar de interface die de client verwacht | **Makkelijker maken:** één eenvoudige interface vóór een ingewikkeld subsysteem |
+| Aantal ingepakte klassen | meestal één (`WhatsAppClient`) | meerdere (zes subsystemen) |
+| Interface | implementeert een bestaande interface (`INotificationService`) | bedenkt een nieuwe, eenvoudigere interface (`StartGame`, `StopGame`) |
+| Waarom nodig | de interfaces passen niet op elkaar | de interfaces passen wel, maar het gebruik is te ingewikkeld |
+
+Kort gezegd: een adapter verandert de interface, een facade vereenvoudigt hem.
+
+| Rol in het pattern | Klasse |
+|---|---|
+| Client | `Program` |
+| Facade | `GameFacade` |
+| Subsystemen | `GraphicsSystem`, `AudioSystem`, `SaveSystem`, `NetworkService`, `GameEngine`, `DebugConsole` |

@@ -1,19 +1,32 @@
 namespace GameApp
 {
-    public class GameManager
+    public class GameFacade
     {
-        private readonly GraphicsSystem graphics = new GraphicsSystem();
-        private readonly AudioSystem audio = new AudioSystem();
-        private readonly SaveSystem saveSystem = new SaveSystem();
-        private readonly NetworkService network = new NetworkService();
-        private readonly GameEngine gameEngine = new GameEngine();
-        private readonly DebugConsole debugConsole = new DebugConsole();
+        private readonly GraphicsSystem graphics;
+        private readonly AudioSystem audio;
+        private readonly SaveSystem saveSystem;
+        private readonly NetworkService network;
+        private readonly GameEngine gameEngine;
+        private readonly DebugConsole debugConsole;
 
         private GameMode mode;
+        private ConnectionMode connection;
 
-        public void StartGame(GameMode mode)
+        public GameFacade(GraphicsSystem graphics, AudioSystem audio, SaveSystem saveSystem,
+            NetworkService network, GameEngine gameEngine, DebugConsole debugConsole)
+        {
+            this.graphics = graphics;
+            this.audio = audio;
+            this.saveSystem = saveSystem;
+            this.network = network;
+            this.gameEngine = gameEngine;
+            this.debugConsole = debugConsole;
+        }
+
+        public void StartGame(GameMode mode, ConnectionMode connection)
         {
             this.mode = mode;
+            this.connection = connection;
 
             graphics.Initialize();
             if (mode == GameMode.Developer)
@@ -31,8 +44,11 @@ namespace GameApp
             saveSystem.LoadSettings();
             saveSystem.LoadPlayer();
 
-            network.Connect();
-            network.Login();
+            if (connection == ConnectionMode.Online)
+            {
+                network.Connect();
+                network.Login();
+            }
 
             if (mode == GameMode.Developer)
             {
@@ -55,8 +71,11 @@ namespace GameApp
             }
             saveSystem.SaveSettings();
 
-            network.Logout();
-            network.Disconnect();
+            if (connection == ConnectionMode.Online)
+            {
+                network.Logout();
+                network.Disconnect();
+            }
 
             if (mode == GameMode.Developer)
             {
