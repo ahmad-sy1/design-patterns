@@ -26,8 +26,8 @@ Per map staat een losse console-applicatie met de klassen van dat patroon en een
 | 1 | Strategy | 01-StrategyPattern | ✅ af |
 | 2 | Observer | 02-ObserverPattern | ✅ af |
 | 3 | Adapter | 03-AdapterPattern | ✅ af |
-| 4 | Decorator | 05-DecoratorPattern | 🔜 |
-| 5 | Factory | 05-FactoryPattern | 🔜 |
-| 6 | Singleton | 06-SingletonPattern | 🔜 |
-| 7 | Facade | 07-FacadePattern | 🔜 |
+| 4 | Facade | 04-FacadePattern | 🔜 |
+| 5 | Decorator | 05-DecoratorPattern | ✅ af |
+| 6 | Factory | 06-FactoryPattern | 🔜 |
+| 7 | Singleton | 07-SingletonPattern | 🔜 |
 | 8 | Template Method | 08-TemplateMethod | 🔜 |

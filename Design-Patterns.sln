@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdapterPattern.Deelopdracht
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdapterPattern.Hoofdopdracht", "03-AdapterPattern\Hoofdopdracht\AdapterPattern.csproj", "{75E3BCEF-FE5E-4118-A3B3-F702D695BF10}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacadePattern.Deelopdrachten", "04-FacadePattern\Deelopdrachten\FacadePattern.csproj", "{F07BE0D9-E77C-4E9B-B041-48E44AF202C0}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecoratorPattern.Deelopdrachten", "05-DecoratorPattern\Deelopdrachten\DecoratorPattern.csproj", "{0F94DBB0-670E-4E97-8043-2BD8D90A9207}"
 EndProject
 Global
@@ -39,6 +41,10 @@ Global
 		{0F94DBB0-670E-4E97-8043-2BD8D90A9207}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F94DBB0-670E-4E97-8043-2BD8D90A9207}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F94DBB0-670E-4E97-8043-2BD8D90A9207}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F07BE0D9-E77C-4E9B-B041-48E44AF202C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F07BE0D9-E77C-4E9B-B041-48E44AF202C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F07BE0D9-E77C-4E9B-B041-48E44AF202C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F07BE0D9-E77C-4E9B-B041-48E44AF202C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
