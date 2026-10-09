@@ -28,9 +28,9 @@ Console-applicatie voor het versturen van notificaties (email en sms), uit te br
 
 ## Opdracht 1 — Onderzoeken
 
-Voer de app uit en beantwoord vragen over INotificationService: waarom de variabele beide services kan bevatten, welke interface en methode ze delen, en het voordeel van programmeren tegen de interface.
+**Opdracht:** Voer de app uit en beantwoord vragen over INotificationService: waarom de variabele beide services kan bevatten, welke interface en methode ze delen, en het voordeel van programmeren tegen de interface.
 
-**Uitwerking:**
+### Antwoorden op de vragen
 
 **Waarom kan de variabele beide services bevatten?**
 De variabele `notification` is van het type `INotificationService`. Elke klasse die `INotificationService` implementeert, moet de methode `Send` hebben en past daarom in die variabele. `EmailNotificationService` en `SmsNotificationService` implementeren allebei die interface. Ze doen niet precies hetzelfde (de uitvoer is anders), maar ze houden zich aan dezelfde afspraak.
@@ -49,9 +49,9 @@ void Send(string recipient, string message);
 
 ## Opdracht 2 — Logging met inheritance
 
-Maak LoggedEmailNotificationService als subclass van EmailNotificationService die vóór het versturen een logregel toont. Maak daarna ook LoggedSmsNotificationService. Test beide.
+**Opdracht:** Maak LoggedEmailNotificationService als subclass van EmailNotificationService die vóór het versturen een logregel toont. Maak daarna ook LoggedSmsNotificationService. Test beide.
 
-**Uitwerking:**
+### Uitwerking
 
 Om `Send` in een subclass te kunnen overschrijven, moet hij in de base class `virtual` zijn. Daarom is `Send` in `EmailNotificationService` en `SmsNotificationService` `public virtual void Send(...)` geworden. In Java is dat niet nodig, want daar zijn methodes standaard te overschrijven.
 
@@ -68,7 +68,7 @@ public class LoggedEmailNotificationService : EmailNotificationService
 
 `LoggedSmsNotificationService` is precies hetzelfde, alleen erft hij van `SmsNotificationService`. De logcode staat nu dus twee keer in de code.
 
-**Testresultaat:**
+### Testresultaat
 
 ```
 LOG: notificatie naar student@school.nl: Je rooster is gewijzigd.
@@ -86,9 +86,9 @@ Bericht: Je rooster is gewijzigd.
 
 ## Opdracht 3 — Urgent notifications
 
-Maak UrgentEmailNotificationService en UrgentSmsNotificationService (inheritance) die [URGENT] voor het bericht plaatsen. Test beide.
+**Opdracht:** Maak UrgentEmailNotificationService en UrgentSmsNotificationService (inheritance) die [URGENT] voor het bericht plaatsen. Test beide.
 
-**Uitwerking:**
+### Uitwerking
 
 ```csharp
 public class UrgentEmailNotificationService : EmailNotificationService
@@ -102,7 +102,7 @@ public class UrgentEmailNotificationService : EmailNotificationService
 
 `UrgentSmsNotificationService` werkt op dezelfde manier, maar erft van `SmsNotificationService`. Ook hier is de code weer dubbel.
 
-**Testresultaat:**
+### Testresultaat
 
 ```
 EMAIL
@@ -118,9 +118,9 @@ Bericht: [URGENT] De les van vandaag vervalt.
 
 ## Opdracht 4 — Denk eerst na
 
-Geen code. Beantwoord vragen over het aantal subclasses bij Logged + Urgent, wat er gebeurt als Timestamp erbij komt, en wat het probleem is van deze aanpak (class explosion).
+**Opdracht:** Geen code. Beantwoord vragen over het aantal subclasses bij Logged + Urgent, wat er gebeurt als Timestamp erbij komt, en wat het probleem is van deze aanpak (class explosion).
 
-**Uitwerking:**
+### Antwoorden op de vragen
 
 **Hoeveel subclasses heb je nodig voor Logged + Urgent?**
 Per service heb je Logged, Urgent en LoggedUrgent nodig, dus 3 subclasses. Met Email en Sms zijn dat **2 × 3 = 6 subclasses**.
@@ -142,9 +142,9 @@ Elke extra kan aan of uit staan. Met 3 extra's zijn er 2³ − 1 = 7 combinaties
 
 ## Opdracht 5 — Begrijpen
 
-Beantwoord vragen over de abstracte NotificationDecorator: waarom hij INotificationService implementeert, waarom hij een field van dat type heeft, waarom de interface en niet EmailNotificationService, en het verschil tussen IS-A en HAS-A.
+**Opdracht:** Beantwoord vragen over de abstracte NotificationDecorator: waarom hij INotificationService implementeert, waarom hij een field van dat type heeft, waarom de interface en niet EmailNotificationService, en het verschil tussen IS-A en HAS-A.
 
-**Uitwerking:**
+### Antwoorden op de vragen
 
 **Waarom implementeert `NotificationDecorator` `INotificationService`?**
 Een decorator moet overal gebruikt kunnen worden waar een `INotificationService` verwacht wordt. Voor de code die hem gebruikt, ziet een gedecoreerde service er precies hetzelfde uit als een gewone service.
@@ -168,9 +168,9 @@ De decorator gebruikt IS-A zodat hij hetzelfde *type* heeft, en HAS-A voor het *
 
 ## Opdracht 6 — Maak LoggingDecorator af
 
-Maak LoggingNotificationDecorator.Send() af, test met Email en daarna met SMS. Vraag: moest de decorator aangepast worden voor SMS? Waarom wel of niet?
+**Opdracht:** Maak LoggingNotificationDecorator.Send() af, test met Email en daarna met SMS. Vraag: moest de decorator aangepast worden voor SMS? Waarom wel of niet?
 
-**Uitwerking:**
+### Uitwerking
 
 ```csharp
 public override void Send(string recipient, string message)
@@ -188,7 +188,7 @@ INotificationService loggingSms =
     new LoggingNotificationDecorator(new SmsNotificationService());
 ```
 
-**Testresultaat:**
+### Testresultaat
 
 ```
 LOG: notificatie naar student@school.nl: Je rooster is gewijzigd.
@@ -202,6 +202,8 @@ Aan: 0612345678
 Bericht: Je rooster is gewijzigd.
 ```
 
+### Antwoorden op de vragen
+
 **Moest de decorator aangepast worden voor SMS?**
 Nee. De decorator kent alleen `INotificationService` en niet `EmailNotificationService` of `SmsNotificationService`. Elke service die de interface implementeert, kan erin. Eén `LoggingNotificationDecorator` vervangt dus zowel `LoggedEmailNotificationService` als `LoggedSmsNotificationService`.
 
@@ -209,9 +211,9 @@ Nee. De decorator kent alleen `INotificationService` en niet `EmailNotificationS
 
 ## Opdracht 7 — UrgentNotificationDecorator
 
-Maak een decorator die [URGENT] voor het bericht plaatst en doorstuurt naar het ingepakte object. INotificationService, EmailNotificationService en SmsNotificationService mogen niet aangepast worden.
+**Opdracht:** Maak een decorator die [URGENT] voor het bericht plaatst en doorstuurt naar het ingepakte object. INotificationService, EmailNotificationService en SmsNotificationService mogen niet aangepast worden.
 
-**Uitwerking:**
+### Uitwerking
 
 ```csharp
 public class UrgentNotificationDecorator : NotificationDecorator
@@ -230,7 +232,7 @@ public class UrgentNotificationDecorator : NotificationDecorator
 
 Er is alleen een nieuwe klasse bijgekomen. De interface en de services zijn niet aangepast (**Open/Closed-principe**).
 
-**Testresultaat:**
+### Testresultaat
 
 ```
 EMAIL
@@ -242,9 +244,9 @@ Bericht: [URGENT] De les van vandaag vervalt.
 
 ## Opdracht 8 — Volg de keten
 
-Teken welke objecten elkaar aanroepen bij Logging → Urgent → Email en beantwoord welke Send() eerst en daarna wordt uitgevoerd, welke class de echte e-mail verstuurt, en waarom een decorator een andere decorator kan bevatten.
+**Opdracht:** Teken welke objecten elkaar aanroepen bij Logging → Urgent → Email en beantwoord welke Send() eerst en daarna wordt uitgevoerd, welke class de echte e-mail verstuurt, en waarom een decorator een andere decorator kan bevatten.
 
-**Uitwerking:**
+### Uitwerking
 
 ```csharp
 INotificationService variantA =
@@ -266,6 +268,8 @@ UrgentNotificationDecorator       -> zet [URGENT] voor het bericht
 EmailNotificationService          -> verstuurt de e-mail
 ```
 
+### Antwoorden op de vragen
+
 **Welke `Send()` wordt eerst uitgevoerd, en welke daarna?**
 1. `LoggingNotificationDecorator.Send()`, de buitenste laag
 2. `UrgentNotificationDecorator.Send()`
@@ -281,9 +285,9 @@ Het field `notificationService` is van het type `INotificationService`, en elke 
 
 ## Opdracht 9 — Maakt de volgorde uit?
 
-Voer variant A (Logging → Urgent → Email) en variant B (Urgent → Logging → Email) uit, teken beide aanroepvolgordes en leg uit of en waarom de volgorde de uitvoer beïnvloedt.
+**Opdracht:** Voer variant A (Logging → Urgent → Email) en variant B (Urgent → Logging → Email) uit, teken beide aanroepvolgordes en leg uit of en waarom de volgorde de uitvoer beïnvloedt.
 
-**Uitwerking:**
+### Uitwerking
 
 ```
 Variant A                               Variant B
@@ -294,7 +298,7 @@ Urgent    (zet [URGENT] ervoor)         Logging   (logt bericht mét [URGENT])
 Email                                   Email
 ```
 
-**Testresultaat variant A:**
+### Testresultaat variant A
 
 ```
 LOG: notificatie naar student@school.nl: De toets begint over 10 minuten.
@@ -303,7 +307,7 @@ Aan: student@school.nl
 Bericht: [URGENT] De toets begint over 10 minuten.
 ```
 
-**Testresultaat variant B:**
+### Testresultaat variant B
 
 ```
 LOG: notificatie naar student@school.nl: [URGENT] De toets begint over 10 minuten.
@@ -312,6 +316,8 @@ Aan: student@school.nl
 Bericht: [URGENT] De toets begint over 10 minuten.
 ```
 
+### Antwoorden op de vragen
+
 **Maakt de volgorde uit?**
 Ja. De e-mail is in beide varianten hetzelfde, maar de logregel verschilt. Elke decorator werkt met het bericht zoals hij het van de laag erboven krijgt. In variant A logt `Logging` vóórdat `Urgent` het bericht aanpast, dus zonder `[URGENT]`. In variant B heeft `Urgent` het bericht al aangepast, dus logt `Logging` het mét `[URGENT]`. Decorators die het bericht veranderen of iets doen met het bericht, zijn dus gevoelig voor de volgorde.
 
@@ -319,9 +325,9 @@ Ja. De e-mail is in beide varianten hetzelfde, maar de logregel verschilt. Elke 
 
 ## Opdracht 10 — TimestampNotificationDecorator
 
-Maak een decorator die de huidige tijd [HH:mm] voor het bericht zet. Test de combinatie Logging → Timestamp → Urgent → Email en daarna dezelfde decorators met SMS.
+**Opdracht:** Maak een decorator die de huidige tijd [HH:mm] voor het bericht zet. Test de combinatie Logging → Timestamp → Urgent → Email en daarna dezelfde decorators met SMS.
 
-**Uitwerking:**
+### Uitwerking
 
 ```csharp
 public override void Send(string recipient, string message)
@@ -340,7 +346,7 @@ INotificationService timestampEmail =
 
 Voor SMS hoef je alleen de binnenste `EmailNotificationService` te vervangen door `SmsNotificationService`.
 
-**Testresultaat:**
+### Testresultaat
 
 ```
 LOG: notificatie naar student@school.nl: Het lokaal is gewijzigd.
@@ -360,9 +366,9 @@ Bericht: [URGENT] [12:38] Het lokaal is gewijzigd.
 
 ## Opdracht 11 — Vergelijken
 
-Vergelijk decorators met één Send-methode met boolean parameters (urgent, logging, timestamp): leesbaarheid van true, true, false, wat er gebeurt bij Encryption/Retry/AuditLogging, welke class te veel verantwoordelijkheden krijgt, en wat overzichtelijker is.
+**Opdracht:** Vergelijk decorators met één Send-methode met boolean parameters (urgent, logging, timestamp): leesbaarheid van true, true, false, wat er gebeurt bij Encryption/Retry/AuditLogging, welke class te veel verantwoordelijkheden krijgt, en wat overzichtelijker is.
 
-**Uitwerking:**
+### Antwoorden op de vragen
 
 **Leesbaarheid van `true, true, false`**
 `Send("0612345678", "Hoi", true, true, false)` zegt niets. Je moet de methode openen om te weten welke `true` urgent is en welke logging. Bij decorators lees je het meteen: `new LoggingNotificationDecorator(new UrgentNotificationDecorator(...))`.
@@ -387,17 +393,19 @@ Decorators. Elke klasse heeft één taak, je kunt combinaties vrij kiezen en de 
 
 ## Pattern Detective
 
-Bepaal voor situatie A t/m E of Adapter, Facade of Decorator het beste past.
+**Opdracht:** Bepaal voor situatie A t/m E of Adapter, Facade of Decorator het beste past.
 
-**Uitwerking:** _nog in te vullen_
+### Uitwerking
+
+_nog in te vullen_
 
 ---
 
 ## Adapter, Facade en Decorator
 
-Vul de tabel in (probleem + onthoudzin) met de begrippen passend maken, makkelijker maken en uitbreiden.
+**Opdracht:** Vul de tabel in (probleem + onthoudzin) met de begrippen passend maken, makkelijker maken en uitbreiden.
 
-**Uitwerking:**
+### Uitwerking
 
 | Pattern | Probleem | Onthoudzin |
 |---|---|---|
@@ -409,9 +417,9 @@ Vul de tabel in (probleem + onthoudzin) met de begrippen passend maken, makkelij
 
 ## Eindopdracht
 
-Bouw een notificatie die via SMS gaat, urgent is, een timestamp bevat en gelogd wordt, zonder bestaande classes aan te passen. Laat de objectstructuur als schema zien met de echte classnamen.
+**Opdracht:** Bouw een notificatie die via SMS gaat, urgent is, een timestamp bevat en gelogd wordt, zonder bestaande classes aan te passen. Laat de objectstructuur als schema zien met de echte classnamen.
 
-**Uitwerking:**
+### Uitwerking
 
 ```csharp
 INotificationService eindopdracht =
@@ -453,7 +461,7 @@ Er is geen enkele klasse aangepast. Alleen bestaande decorators zijn om de `SmsN
               Logging           Urgent             Timestamp
 ```
 
-**Testresultaat:**
+### Testresultaat
 
 ```
 LOG: notificatie naar 0612345678: Het lokaal is gewijzigd.
