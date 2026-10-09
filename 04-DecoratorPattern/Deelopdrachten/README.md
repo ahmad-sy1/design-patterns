@@ -6,15 +6,19 @@ Console-applicatie voor het versturen van notificaties (email en sms), uit te br
 
 ```
 04-DecoratorPattern/Deelopdrachten/
-├── INotificationService.cs              // component-interface
-├── EmailNotificationService.cs          // concreet component
-├── SmsNotificationService.cs            // concreet component
-├── LoggedEmailNotificationService.cs    // opdracht 2 (inheritance)
-├── LoggedSmsNotificationService.cs      // opdracht 2 (inheritance)
-├── UrgentEmailNotificationService.cs    // opdracht 3 (inheritance)
-├── UrgentSmsNotificationService.cs      // opdracht 3 (inheritance)
-├── NotificationDecorator.cs             // abstracte decorator
-├── LoggingNotificationDecorator.cs      // concrete decorator
+├── Interfaces/
+│   └── INotificationService.cs              // component-interface
+├── Services/
+│   ├── EmailNotificationService.cs          // concreet component
+│   └── SmsNotificationService.cs            // concreet component
+├── Inheritance/                             // opdracht 2 en 3 (aanpak die niet schaalt)
+│   ├── LoggedEmailNotificationService.cs
+│   ├── LoggedSmsNotificationService.cs
+│   ├── UrgentEmailNotificationService.cs
+│   └── UrgentSmsNotificationService.cs
+├── Decorators/
+│   ├── NotificationDecorator.cs             // abstracte decorator
+│   └── LoggingNotificationDecorator.cs      // concrete decorator
 └── Program.cs
 ```
 
