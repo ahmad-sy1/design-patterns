@@ -27,7 +27,47 @@ Console-applicatie die een game opstart via losse subsystemen (graphics, audio, 
 
 ### Uitwerking
 
-_nog in te vullen_
+De sourcebestanden staan in de console-app `FacadePattern.csproj`, namespace `GameApp`. De app bestaat uit vijf subsystemen:
+
+| Klasse | Bestand | Methodes |
+|---|---|---|
+| `GraphicsSystem` | `GraphicSystem.cs` | `Initialize`, `SetResolution` |
+| `AudioSystem` | `AudioSystem.cs` | `Initialize`, `SetVolume` |
+| `SaveSystem` | `SaveSystem.cs` | `LoadSettings`, `LoadPlayer` |
+| `NetworkService` | `NetworkService.cs` | `Connect`, `Login` |
+| `GameEngine` | `GameEngine.cs` | `LoadWorld`, `Start` |
+
+`Program` maakt alle vijf subsystemen zelf aan en roept daarna tien methodes aan, in een vaste volgorde en met vaste waarden (1920x1080, volume 70%). Let op: het bestand heet `GraphicSystem.cs`, maar de klasse heet `GraphicsSystem`.
+
+```
+Program
+   |
+   +--> GraphicsSystem   Initialize, SetResolution
+   +--> AudioSystem      Initialize, SetVolume
+   +--> SaveSystem       LoadSettings, LoadPlayer
+   +--> NetworkService   Connect, Login
+   +--> GameEngine       LoadWorld, Start
+```
+
+### Testresultaat
+
+```
+Graphics geïnitialiseerd.
+Resolutie ingesteld op 1920x1080.
+Audio geïnitialiseerd.
+Volume ingesteld op 70%.
+Instellingen geladen.
+Spelergegevens geladen.
+Verbonden met gameserver.
+Speler ingelogd.
+Gamewereld geladen.
+Game gestart!
+```
+
+### Antwoorden op de vragen
+
+**Werkt prima, toch?**
+Ja, het programma doet wat het moet doen. Maar `Program` moet wel alles weten: welke vijf subsystemen er zijn, welke methodes ze hebben, met welke waarden ze aangeroepen worden en in welke volgorde. Dat gaat goed zolang er maar één manier is om de game te starten. Komen er meer manieren bij (zie deel 2), dan moet al die kennis op meerdere plekken in `Program` staan.
 
 ---
 
