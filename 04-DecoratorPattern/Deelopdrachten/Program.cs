@@ -57,6 +57,15 @@ namespace NotificationApp
                         new EmailNotificationService()));
             variantA.Send("student@school.nl", "De toets begint over 10 minuten.");
 
+            // Opdracht 9 - variant B: Urgent -> Logging -> Email
+            Console.WriteLine("=== Opdracht 9 variant B ===");
+            INotificationService variantB =
+                new UrgentNotificationDecorator(
+                    new LoggingNotificationDecorator(
+                        new EmailNotificationService()));
+            variantB.Send("student@school.nl", "De toets begint over 10 minuten.");
+
+
             Console.ReadLine();
         }
     }

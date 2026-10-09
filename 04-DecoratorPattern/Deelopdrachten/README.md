@@ -282,7 +282,37 @@ Het field `notificationService` is van het type `INotificationService`, en elke 
 
 Voer variant A (Logging → Urgent → Email) en variant B (Urgent → Logging → Email) uit, teken beide aanroepvolgordes en leg uit of en waarom de volgorde de uitvoer beïnvloedt.
 
-**Uitwerking:** _nog in te vullen_
+**Uitwerking:**
+
+```
+Variant A                               Variant B
+Logging   (logt origineel bericht)      Urgent    (zet [URGENT] ervoor)
+   v                                       v
+Urgent    (zet [URGENT] ervoor)         Logging   (logt bericht mét [URGENT])
+   v                                       v
+Email                                   Email
+```
+
+**Testresultaat variant A:**
+
+```
+LOG: notificatie naar student@school.nl: De toets begint over 10 minuten.
+EMAIL
+Aan: student@school.nl
+Bericht: [URGENT] De toets begint over 10 minuten.
+```
+
+**Testresultaat variant B:**
+
+```
+LOG: notificatie naar student@school.nl: [URGENT] De toets begint over 10 minuten.
+EMAIL
+Aan: student@school.nl
+Bericht: [URGENT] De toets begint over 10 minuten.
+```
+
+**Maakt de volgorde uit?**
+Ja. De e-mail is in beide varianten hetzelfde, maar de logregel verschilt. Elke decorator werkt met het bericht zoals hij het van de laag erboven krijgt. In variant A logt `Logging` vóórdat `Urgent` het bericht aanpast, dus zonder `[URGENT]`. In variant B heeft `Urgent` het bericht al aangepast, dus logt `Logging` het mét `[URGENT]`. Decorators die het bericht veranderen of iets doen met het bericht, zijn dus gevoelig voor de volgorde.
 
 ---
 
